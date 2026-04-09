@@ -33,7 +33,7 @@ async function uploadPhoto(file) {
     reader.onload = async (e) => {
       try {
         const base64 = e.target.result.split(',')[1];
-        const res = await fetch('/.netlify/functions/upload-photo', {
+        const res = await fetch('/api/upload-photo', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -451,24 +451,6 @@ async function saveManual() {
 
 // ─── FETCH FROM URL ───────────────────────────────────────────────────────────
 
-// somewhere near your other front-end helpers
-async function fetchFromSpoonacular(query) {
-  const res = await fetch('/api/spoonacular', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query })
-  });
-  const data = await res.json();
-  return data.results || [];
-}
-
-// usage when user clicks your "fetch" button
-document.getElementById('recipe-url-btn').addEventListener('click', async () => {
-  const query = document.getElementById('recipe-url').value;
-  const results = await fetchFromSpoonacular(query);
-  console.log(results);
-});
-
 async function fetchAndSave() {
   if (!isAuthorized()) return;
   const url = document.getElementById('recipe-url').value.trim();
@@ -480,7 +462,7 @@ async function fetchAndSave() {
   status.innerHTML = 'Fetching recipe... <span class="spinner"></span>';
   btn.disabled = true;
   try {
-    const res = await fetch('/.netlify/functions/fetch-recipe', {
+    const res = await fetch('/api/fetch-recipe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url, category })

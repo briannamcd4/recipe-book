@@ -1,14 +1,21 @@
 export default async function handler(req, res) {
-  const API_KEY = process.env.SPOONACULAR_KEY; // store this in Vercel env
-  const { query } = req.body; // e.g., recipe name or ingredients
+  const API_KEY = process.env.SPOONACULAR_KEY;
+  const { url } = req.body; // <-- expect URL now
+
+  if (!url) {
+    return res.status(400).json({ error: "No URL provided" });
+  }
+
   try {
     const response = await fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(query)}&apiKey=${API_KEY}`
+      `https://api.spoonacular.com/recipes/extract?url=${encodeURIComponent(url)}&apiKey=${API_KEY}`
     );
+
     const data = await response.json();
+
     res.status(200).json(data);
   } catch (err) {
-    console.error('Spoonacular fetch error:', err);
-    res.status(500).json({ error: 'Failed to fetch from Spoonacular' });
+    console.error("Extract error:", err);
+    res.status(500).json({ error: "Failed to extract recipe" });
   }
 }
