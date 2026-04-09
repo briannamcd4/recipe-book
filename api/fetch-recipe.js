@@ -17,9 +17,21 @@ export default async function handler(req, res) {
     const spoonacularUrl = `https://api.spoonacular.com/recipes/extract?url=${encodeURIComponent(url)}&apiKey=${apiKey}`;
 
     const response = await fetch(spoonacularUrl);
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error('Spoonacular error:', response.status, text);
+      return res.status(422).json({ error: 'Could not extract recipe from this URL.' });
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return res.status(422).json({ error: 'Invalid response from recipe service.' });
+    }
+
     const data = await response.json();
 
-    if (!response.ok || data.status === 'failure') {
+    if (data.status === 'failure') {
       return res.status(422).json({ error: 'Could not extract recipe.' });
     }
 
