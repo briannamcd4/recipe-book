@@ -26,41 +26,32 @@ Supabase is where your recipes are stored so both you and your sister can see th
 
 ---
 
-## Step 2 — Deploy to Netlify (your free website)
+## Step 2 — Deploy to Vercel (your free website)
 
-Netlify hosts your site and runs the serverless function that fetches recipes from URLs.
+Vercel hosts your site and runs the `/api` serverless functions for recipe fetching and photo upload.
 
-### Option A — Drag & Drop (easiest, no Git needed)
+1. Go to [vercel.com](https://vercel.com) → sign up free → click **New Project**
+2. Import your GitHub repo or use the CLI to deploy your local folder
+3. Make sure the project root is `recipe-book-website`
+4. Vercel will detect the static site and `/api` functions automatically
+5. After deployment, your site will be live at a Vercel URL like `https://recipe-book.vercel.app`
 
-1. Go to [netlify.com](https://netlify.com) → sign up free → click **Add new site → Deploy manually**
-2. Drag your entire `recipe-book` folder onto the Netlify upload area
-3. Your site goes live instantly at a random URL like `https://jolly-pie-abc123.netlify.app`
-4. You can rename it under **Site settings → Change site name**
-
-> **Note:** For drag & drop, Netlify Functions won't work (the URL-fetch feature).  
-> The site will still work fully — you just won't be able to use "Paste a link" to auto-import.  
-> To enable that too, use Option B below.
-
-### Option B — GitHub (enables everything including URL import)
-
-1. Create a free [github.com](https://github.com) account
-2. Create a new repository called `recipe-book` (make it private if you want)
-3. Upload all your files to the repo (drag & drop into GitHub's interface works)
-4. On Netlify: **Add new site → Import from Git → GitHub** → select your repo
-5. Build settings will auto-detect from `netlify.toml` — just click **Deploy site**
+> **Note:** The `Paste a link` auto-import feature requires the serverless function in `recipe-book-website/api`.
 
 ---
 
-## Step 3 — Add your Anthropic API key (for URL recipe import)
+## Step 3 — Add your Spoonacular API key (for URL recipe import)
 
-This only matters if you want the "Paste a link" feature to auto-extract recipes.
+This is required for the "Paste a link" feature to auto-extract recipes.
 
-1. Get an API key at [console.anthropic.com](https://console.anthropic.com)  
-   (Free tier gives you enough credits to fetch hundreds of recipes)
-2. In Netlify: go to **Site settings → Environment variables → Add variable**
-   - Key: `ANTHROPIC_API_KEY`
-   - Value: your key (starts with `sk-ant-...`)
-3. Click **Save** and redeploy (Deploys → Trigger deploy)
+1. Get an API key at [spoonacular.com](https://spoonacular.com/food-api)
+2. In Vercel: go to **Project Settings → Environment Variables**
+   - Key: `SPOONACULAR_KEY`
+   - Value: your Spoonacular key
+3. Also add these keys so uploads and Supabase access work:
+   - `SUPABASE_SERVICE_KEY`
+   - `SUPABASE_URL`
+4. Click **Save** and redeploy the site
 
 ---
 
@@ -79,10 +70,10 @@ recipe-book/
 │   ├── index.html          ← the website
 │   ├── css/style.css       ← all the styles
 │   └── js/app.js           ← app logic (edit SUPABASE_URL here)
-├── netlify/
-│   └── functions/
-│       └── fetch-recipe.js ← serverless function for URL import
-├── netlify.toml            ← Netlify config
+├── api/
+│   ├── fetch-recipe.js     ← serverless function for URL import
+│   ├── upload-photo.js     ← image upload function
+│   └── spoonacular.js      ← alternate extract helper
 └── supabase-schema.sql     ← run this once in Supabase
 ```
 

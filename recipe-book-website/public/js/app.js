@@ -25,7 +25,7 @@ function isConfigured() {
   return SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
 }
 
-// Photo upload now goes through the Netlify function so the service key
+// Photo upload now goes through the serverless function so the service key
 // stays secret on the server — never expose it in frontend JS.
 async function uploadPhoto(file) {
   return new Promise((resolve, reject) => {
