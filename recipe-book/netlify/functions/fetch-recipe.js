@@ -48,7 +48,7 @@ If you cannot access or find the recipe, return: {"error": "Could not extract re
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 2000,
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
         messages: [{ role: 'user', content: prompt }]
@@ -56,13 +56,20 @@ If you cannot access or find the recipe, return: {"error": "Could not extract re
     });
 
     const data = await response.json();
+    console.log('Anthropic response status:', response.status);
+    console.log('Anthropic response:', JSON.stringify(data).slice(0, 500));
+
+    if (!response.ok) {
+      throw new Error(`Anthropic API error: ${JSON.stringify(data)}`);
+    }
+
     const textContent = (data.content || [])
       .filter(b => b.type === 'text')
       .map(b => b.text)
       .join('');
 
     const jsonMatch = textContent.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No JSON in response');
+    if (!jsonMatch) throw new Error('No JSON in response: ' + textContent.slice(0, 200));
 
     const parsed = JSON.parse(jsonMatch[0]);
     if (parsed.error) {
@@ -75,7 +82,7 @@ If you cannot access or find the recipe, return: {"error": "Could not extract re
       body: JSON.stringify(parsed)
     };
   } catch(err) {
-    console.error('fetch-recipe error:', err);
+    console.error('fetch-recipe error:', err.message);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Failed to extract recipe. Please add it manually.' })
