@@ -451,6 +451,24 @@ async function saveManual() {
 
 // ─── FETCH FROM URL ───────────────────────────────────────────────────────────
 
+// somewhere near your other front-end helpers
+async function fetchFromSpoonacular(query) {
+  const res = await fetch('/api/spoonacular', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query })
+  });
+  const data = await res.json();
+  return data.results || [];
+}
+
+// usage when user clicks your "fetch" button
+document.getElementById('recipe-url-btn').addEventListener('click', async () => {
+  const query = document.getElementById('recipe-url').value;
+  const results = await fetchFromSpoonacular(query);
+  console.log(results);
+});
+
 async function fetchAndSave() {
   if (!isAuthorized()) return;
   const url = document.getElementById('recipe-url').value.trim();
