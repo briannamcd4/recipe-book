@@ -19,7 +19,7 @@ exports.handler = async function(event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'No URL provided' }) };
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.SPOONACULAR_API_KEY;
   if (!apiKey) {
     return { statusCode: 500, body: JSON.stringify({ error: 'Server not configured (missing API key)' }) };
   }
