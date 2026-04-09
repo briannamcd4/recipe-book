@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const API_KEY = process.env.SPOONACULAR_KEY;
-  const { url } = req.body; // <-- expect URL now
+  const { url } = req.body;
 
   if (!url) {
     return res.status(400).json({ error: "No URL provided" });
